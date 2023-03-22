@@ -1,0 +1,39 @@
+{
+    "export_path": "/tmp/",
+    "loading_path": "/tmp/",
+    "dataset_generation": {
+        "fitting_window": 5,
+        "polar_transform": false,
+        "normalisation": "minmax",
+        "p_x": true,
+        "p_y": true,
+        "p_z": true,
+        "v_x": false,
+        "v_y": false,
+        "v_z": false,
+        "s_x": false,
+        "s_y": false,
+        "s_z": false,
+        "alpha": false,
+        "beta": false,
+        "v_mag": false
+    },
+    "architecture": {
+        "n_layers": 3,
+        "dropout": 0.2,
+        "n_neurons": [
+            128,
+            64,
+            64
+        ]
+    },
+    "training": {
+        "epochs": 800,
+        "optimizer": "adam",
+        "batch_size": 4096,
+        "verbose": 1,
+        "validation_split": 0.05,
+        "learning_rate": 0.001,
+        "checkpoint_name": "MLP_model.hdf5"
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "axis": 2,
+    "offset": 0.15,
+    "position_threshold": -0.03,
+    "acceleration_threshold": 120,
+    "distance": 10,
+    "polynom_order": 1,
+    "use_windows": true,
+    "window_size":  5,
+    "root_eval_radius": 0.01,
+    "position_based_indices": true,
+    "regression": true
+}
