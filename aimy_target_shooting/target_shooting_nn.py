@@ -174,7 +174,7 @@ class TargetShootingNN:
             Defaults to None.
             verbose (typing.Optional[int], optional): Print messages.
             Defaults to None.
-            validation_split (typing.Optional[float], optional): Validation split. 
+            validation_split (typing.Optional[float], optional): Validation split.
             Defaults to None.
             checkpoint_name (typing.Optional[str], optional): Checkpoint name.
             Defaults to None.
