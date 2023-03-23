@@ -159,11 +159,25 @@ def polar_to_cartesian(
 
 
 def find_rebound(
-    positions,
+    positions: typing.Union[np.ndarray, typing.List[float]],
     detection_height: float = 0.76,
     detection_threshold: float = -0.03,
     detection_distance: int = 10,
 ) -> typing.List[int]:
+    """Finds rebound indices.
+
+    Args:
+        positions (typing.Union[np.ndarray, typing.List[float]]): Height positions
+        of a ball trajectory.
+        detection_height (float, optional): Height for detecting rebounds.
+        Defaults to 0.76.
+        detection_threshold (float, optional): Detection threshold. Defaults to -0.03.
+        detection_distance (int, optional): Distance parameter for checking the
+        neighborhood for other rebounds. Defaults to 10.
+
+    Returns:
+        typing.List[int]: List of rebound indices.
+    """
 
     positions = np.array(positions)
     positions_unbaised = positions[:, 2] - detection_height
@@ -178,18 +192,28 @@ def find_rebound(
     return discontinuity_indices
 
 
-def equally_space_list(start: int, stop: int, length: int, endpoint=True):
-    if endpoint:
-        eval_length = length - 1
-    else:
-        eval_length = length
+def f_phi(
+    actuation: typing.Optional[float] = None,
+    phi: typing.Optional[float] = None,
+    radians: bool = True,
+) -> float:
+    """Transformation of actuation with range 0 to 1 to Azimuth angle and
+    vice versa.
 
-    step = (stop - start) / eval_length
+    Args:
+        actuation (float, optional): Given actuation. Defaults to None.
+        phi (float, optional): Given angle value. Defaults to None.
+        radians (bool, optional): Specifier if given or returned angle
+        should be radian. Defaults to True.
 
-    return [int(i * step) for i in range(length)]
+    Raises:
+        AttributeError: Raised if neither actuation or angle are given.
+        AttributeError: Raised if both actuation and angle are given.
 
-
-def f_phi(actuation=None, phi=None, radians: bool = True):
+    Returns:
+        float: Returns either angle or actuation, depending on given
+        attributes.
+    """
     if actuation is None and phi is None:
         raise AttributeError("No argument given!")
 
@@ -226,7 +250,28 @@ def f_phi(actuation=None, phi=None, radians: bool = True):
         return phi_calc
 
 
-def f_theta(actuation=None, theta=None, radians: bool = True):
+def f_theta(
+    actuation: typing.Optional[float] = None,
+    theta: typing.Optional[float] = None,
+    radians: bool = True,
+):
+    """Transformation of actuation with range 0 to 1 to altitude angle and
+    vice versa.
+
+    Args:
+        actuation (float, optional): Given actuation. Defaults to None.
+        theta (float, optional): Given angle value. Defaults to None.
+        radians (bool, optional): Specifier if given or returned angle
+        should be radian. Defaults to True.
+
+    Raises:
+        AttributeError: Raised if neither actuation or angle are given.
+        AttributeError: Raised if both actuation and angle are given.
+
+    Returns:
+        float: Returns either angle or actuation, depending on given
+        attributes.
+    """
     if actuation is None and theta is None:
         raise AttributeError("No argument given!")
 

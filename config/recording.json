@@ -1,0 +1,52 @@
+{
+    "recording_param": {
+        "ip": "10.42.26.171",
+        "port": 5555,
+        "save_path": "/tmp/220905_target_shooting",
+        "prefix": "target_shooting",
+        "recording_duration": 4.5,
+        "tennicam_segment_id": "tennicam_client"
+    },
+    "single_measurement": {
+        "phi": 0.5,
+        "theta": 0.5,
+        "omega_tl": 1200,
+        "omega_tr": 1200,
+        "omega_bc": 1200
+    },
+    "multiple_measurements": {
+        "phi": 0.5,
+        "theta": 1.0,
+        "omega_tl": 800,
+        "omega_tr": 800,
+        "omega_bc": 800,
+        "number_shots": 30
+    },
+    "gridsearch_param": {
+        "actuation_upper_threshold": 4800,
+        "actuation_lower_threshold": 3200,
+        "n_phi_steps": 5,
+        "phi_range": [
+            0.40, 0.60
+        ],
+        "n_theta_steps": 3,
+        "theta_range": [
+            0.4, 0.6
+        ],
+        "n_omega_tl_steps": 5,
+        "omega_tl_range": [
+            650, 2750
+        ],
+        "n_omega_tr_steps": 5,
+        "omega_tr_range": [
+            650, 2750
+        ],
+        "n_omega_bc_steps": 5,
+        "omega_bc_range": [
+            650, 2750
+        ]
+    },
+    "granny_recording": {
+        "clipping_time": 0.25
+    }
+  }

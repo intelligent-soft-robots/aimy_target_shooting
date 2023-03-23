@@ -1,8 +1,6 @@
-import json
 import logging
 import os
 import pathlib
-import typing
 
 
 def get_config_path(config_name: str) -> pathlib.Path:
@@ -46,25 +44,3 @@ def get_temp_path() -> pathlib.Path:
         pathlib.Path: Path to temporary directory.
     """
     return pathlib.Path(os.path.join("tmp", "target_shooting"))
-
-
-def import_json_config(
-    config_name: str, path: typing.Optional[pathlib.Path] = None
-) -> dict:
-    """Imports config dictionary from JSON file.
-
-    Args:
-        config_name (str): Name of config, in case no path is given.
-        path (typing.Optional[pathlib.Path], optional): Path of json config.
-        Defaults to None.
-
-    Returns:
-        dict: dictionary with configuration.
-    """
-    if path is None:
-        path = get_config_path(config_name)
-
-    with open(path, "r") as file:
-        config = json.load(file)
-
-    return config

@@ -1,14 +1,17 @@
-import pathlib
 import logging
+import pathlib
+
+import numpy as np
 
 from aimy_target_shooting.ball_launcher_api import BallLauncherAPI
 from aimy_target_shooting.target_shooting_nn import TargetShootingNN
+
 
 def train_target_shooting():
     file_path = pathlib.Path(
         "/home/adittrich/nextcloud/82_Data_Processed/"
         "MN5008_training_data_with_outlier/"
-        "MN5008_grid_data_equal_speeds.hdf5"
+        "MN5008_grid_data_all.hdf5"
     )
 
     nn = TargetShootingNN()
@@ -19,14 +22,19 @@ def train_target_shooting():
     nn.export_model()
     nn.export_scaling()
 
+
 def launch_ball_loaded_model():
-    #launcher = BallLauncherAPI(launcher_ip="10.42.26.171")
+    launcher = BallLauncherAPI(launcher_ip="10.42.26.171")
 
     nn = TargetShootingNN()
     nn.load_model(pathlib.Path("/tmp/nn_model/model.hdf5"))
     nn.load_scaling()
 
-    print(nn.target_scaler.bias_value)
+    target_position = np.array((3.0, 1.0, 0.76))
+    control_parameters = nn.compute_control_parameters(target_position)
+
+    launcher.set_rpm(*control_parameters)
+    launcher.launch()
 
 
 if __name__ == "__main__":
@@ -36,5 +44,7 @@ if __name__ == "__main__":
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
-    target_position = (12.0, 12.0, 12.0)
+    np.set_printoptions(suppress=True)
+
+    # train_target_shooting()
     launch_ball_loaded_model()

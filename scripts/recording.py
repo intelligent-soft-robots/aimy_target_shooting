@@ -56,25 +56,12 @@ def grid_search() -> None:
             for omega_tl in np.nditer(omega_tl_space):
                 for omega_tr in np.nditer(omega_tr_space):
                     for omega_bc in np.nditer(omega_bc_space):
-
                         if (
                             actuation_lower_threshold > (omega_tl + omega_tr + omega_bc)
                             or (omega_tl + omega_tr + omega_bc)
                             > actuation_upper_threshold
                         ):
                             continue
-
-                        # if omega_tl != omega_bc or omega_bc != omega_tr:
-                        #    continue
-
-                        # threshold = 800
-
-                        # if (
-                        #    abs(omega_bc - omega_tl) < threshold
-                        #    or abs(omega_tr - omega_bc) < threshold
-                        #    or abs(omega_tr - omega_tl) < threshold
-                        # ):
-                        #    continue
 
                         launch_parameters = (
                             phi,
@@ -92,7 +79,7 @@ def grid_search() -> None:
     env.export_recordings(prefix=prefix, path=dir_path, export_format="hdf5")
     env.export_recordings(prefix=prefix, path=dir_path, export_format="csv")
 
-    print("Measurement completed.")
+    logging.info("Measurement completed.")
 
 
 def run_single_measurement() -> None:
@@ -162,7 +149,7 @@ def run_multiple_measurements() -> None:
     env.export_recordings(prefix=prefix, path=dir_path, export_format="csv")
 
 
-def granny_launcher_recording():
+def manual_recording():
     path = get_config_path("recording")
     with open(path, "r") as file:
         config = json.load(file)
@@ -176,7 +163,7 @@ def granny_launcher_recording():
     env.export_recordings(prefix=prefix, path=dir_path, export_format="csv")
     env.export_recordings(prefix=prefix, path=dir_path, export_format="hdf5")
 
-    print("Measurement completed.")
+    logging.info("Measurement completed.")
 
 
 if __name__ == "__main__":
@@ -188,6 +175,4 @@ if __name__ == "__main__":
     run_multiple_measurements()
     # run_single_measurement()
     # grid_search()
-    # granny_launcher_recording()
-
-    # room_recording()
+    # manual_recording()
