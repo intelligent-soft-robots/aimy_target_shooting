@@ -231,6 +231,8 @@ def f_phi(
     ]
     phi_pos_actuation = [i * (1 / 6) for i in range(7)]
 
+    output = None
+
     if phi is not None:
         f = interpolate.interp1d(phi_pos, phi_pos_actuation)
 
@@ -238,7 +240,8 @@ def f_phi(
             phi = np.rad2deg(phi)
 
         actuation = f(phi)
-        return actuation
+
+        output = actuation
 
     if actuation is not None:
         f = interpolate.interp1d(phi_pos_actuation, phi_pos)
@@ -247,7 +250,9 @@ def f_phi(
         if radians:
             phi_calc = np.radians(phi_calc)
 
-        return phi_calc
+        output = phi_calc
+
+    return output
 
 
 def f_theta(
@@ -281,6 +286,8 @@ def f_theta(
     theta_pos = [6.40400874, 12.17836522, 19.90385964, 28.11300675, 37.14585762]
     theta_pos_actuation = [i * 0.25 for i in range(5)]
 
+    output = None
+
     if theta is not None:
         f = interpolate.interp1d(theta_pos, theta_pos_actuation)
 
@@ -288,7 +295,8 @@ def f_theta(
             theta = np.rad2deg(theta)
 
         actuation = f(theta)
-        return actuation
+
+        output = actuation
 
     if actuation is not None:
         f = interpolate.interp1d(theta_pos_actuation, theta_pos)
@@ -297,4 +305,6 @@ def f_theta(
         if radians:
             theta_calc = np.radians(theta_calc)
 
-        return theta_calc
+        output = theta_calc
+
+    return output
