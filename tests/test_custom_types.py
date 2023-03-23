@@ -1,14 +1,15 @@
 import random
 
 import numpy as np
-import target_shooting.utils.custom_types
+
+from aimy_target_shooting.custom_types import TrajectoryCollection, TrajectoryData
 
 
 def test_get_item():
-    item_0 = target_shooting.utils.custom_types.TrajectoryData()
-    item_1 = target_shooting.utils.custom_types.TrajectoryData()
-    item_2 = target_shooting.utils.custom_types.TrajectoryData()
-    item_3 = target_shooting.utils.custom_types.TrajectoryData()
+    item_0 = TrajectoryData()
+    item_1 = TrajectoryData()
+    item_2 = TrajectoryData()
+    item_3 = TrajectoryData()
 
     rand_list = []
     for _ in range(20):
@@ -16,7 +17,7 @@ def test_get_item():
 
     item_0.time_stamps = rand_list
 
-    collection = target_shooting.utils.custom_types.TrajectoryCollection()
+    collection = TrajectoryCollection()
 
     collection.append(item_0)
     collection.append(item_1)
@@ -38,12 +39,12 @@ def test_get_item():
 
 
 def test_slicing_collection():
-    collection = target_shooting.utils.custom_types.TrajectoryCollection()
+    collection = TrajectoryCollection()
 
     # Append items
     n_elements = 10
     for _ in range(n_elements):
-        new_item = target_shooting.utils.custom_types.TrajectoryData()
+        new_item = TrajectoryData()
         collection.append(new_item)
 
     assert len(collection) == n_elements
@@ -54,11 +55,11 @@ def test_appending_samples():
     n_datasets = 5
     n_samples = 200
 
-    collection = target_shooting.utils.custom_types.TrajectoryCollection()
+    collection = TrajectoryCollection()
 
     for _ in range(n_datasets):
         launch_parameter = [0.5, 0.5, 0.3, 0.2, 0.1]
-        trajectory_data = target_shooting.utils.custom_types.TrajectoryData()
+        trajectory_data = TrajectoryData()
 
         trajectory_data.set_launch_param(launch_parameter)
 
