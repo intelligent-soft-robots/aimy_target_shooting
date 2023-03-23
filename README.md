@@ -55,3 +55,5 @@ To cite **AIMY** in your academic research, please use the following bibtex line
 # License
 
 Closures is provided under the [BSD 3-Clause](https://github.com/intelligent-soft-robots/aimy_target_shooting/blob/main/LICENSE) license.
+
+Copyright © 2023, Max Planck Gesellschaft

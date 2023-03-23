@@ -1,2 +1,14 @@
 [tool.isort]
 profile = "black"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aimy_target_shooting"
+version = "0.0.1"
+dependencies = [
+    "requests",
+    'importlib-metadata; python_version<"3.8"',
+]

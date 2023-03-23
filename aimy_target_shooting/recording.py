@@ -130,7 +130,6 @@ class Recording:
         start_time_s = time.time()
         try:
             while not signal_handler.has_received_sigint():
-
                 iteration += 1
                 obs = frontend.read(iteration)
 

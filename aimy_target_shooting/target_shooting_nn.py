@@ -166,9 +166,6 @@ class TargetShootingNN:
         """Trains given keras model.
 
         Args:
-            model (tf.keras.Model): Training model.
-            training_set (np.ndarray): Target state data set.
-            training_label (np.ndarray): Control values labels.
             epochs (typing.Optional[int], optional): Number of epochs. Defaults
             to None.
             optimizer (typing.Optional[str], optional): Optimizer for training.
@@ -253,20 +250,17 @@ class TargetShootingNN:
         if self.verbose:
             logging.info("Model trained.")
 
-    def launch_at_target(self, launcher, target: np.ndarray) -> None:
-        """Launches to target with given launcher to predicted location.
+    def compute_control_parameters(self, target: np.ndarray) -> None:
+        """Computes control parameters based on given model and target.
 
         Args:
-            launcher (_type_): Python API of physical launcher. Launcher is required
-            to have a set_launcher_parameters() and launch() function.
             target (np.ndarray): Target location.
         """
         target_normalised = np.array([self.target_scaler.only_scale(target)])
         control_params = self.model.predict(target_normalised)
         control_params_unnormalised = self.control_scaler.unscale(control_params[0])
 
-        launcher.set_launch_parameters(control_params_unnormalised)
-        launcher.launch()
+        return control_params_unnormalised
 
     def __exit__(self) -> None:
         self.export_model()

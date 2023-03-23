@@ -119,6 +119,7 @@ class BallLauncherAPI:
         self.set_state()
 
     def set_state(self):
+        """Interfaces set state function of launcher client and launcher API."""
         self._client.set_state(
             self._phi,
             self._theta,

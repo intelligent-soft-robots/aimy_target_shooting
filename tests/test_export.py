@@ -2,8 +2,9 @@ import datetime
 import pathlib
 
 import numpy as np
-from target_shooting.utils import export_tools
-from target_shooting.utils.custom_types import TrajectoryCollection, TrajectoryData
+
+from aimy_target_shooting import export_tools
+from aimy_target_shooting.custom_types import TrajectoryCollection, TrajectoryData
 
 
 def generate_test_collection() -> TrajectoryCollection:
