@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./docs/AIMY_banner.png" width="100%" alt="AIMY Logo" align="center"/>
+  <img src="./docs/_static/img/AIMY_banner.png" width="100%" alt="AIMY Logo" align="center"/>
 </p>
 
 # AIMY Evaluation and Target Shooting
