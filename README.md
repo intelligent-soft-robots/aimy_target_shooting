@@ -1,8 +1,12 @@
 <p align="center">
-  <img src="./doc/AIMY.svg" width="150" alt="AIMY Logo" align="center"/>
+  <img src="./docs/AIMY_banner.png" width="100%" alt="AIMY Logo" align="center"/>
 </p>
 
 # AIMY Evaluation and Target Shooting
+
+![Python 3.8](https://img.shields.io/badge/python-3.8-blue)
+[![Code style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+[![arXiv](https://img.shields.io/badge/arXiv-2210.06048-b31b1b.svg)](https://arxiv.org/abs/2210.06048) 
 
 This repository provides the evaluation code of the publication 
 
@@ -25,7 +29,7 @@ pip install numpy, pandas, scipy, matplotlib, seaborn, pytest, h5py, tensorflow
 
 Misc dependencies:
 ``` 
-pip install isort, black, flake8, mypy, tickzplotlib
+pip install isort, black, flake8, mypy, tickzplotlib, sphinx
 ```
 
 Interfacing MPI Intelligent Soft Robots Lab libraries:
