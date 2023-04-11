@@ -14,7 +14,7 @@ class ControlPanel:
     def __init__(
         self,
         root: tk.Tk,
-        launcher_ip: str = "10.42.26.171",
+        config: dict,
         demo_mode: bool = False,
         verbose: bool = True,
         width: int = 403,
@@ -206,7 +206,7 @@ class ControlPanel:
 
         # Ball launcher and record environment
         if not self.demo_mode:
-            self.record_env = Recording(launcher_ip=launcher_ip)
+            self.record_env = Recording(config)
 
     def _btn_launch(self) -> None:
         """Actuation launches ball and stores trajectory in instance
@@ -275,7 +275,7 @@ class ControlPanel:
 
 
 def run_control_panel(
-    launcher_ip: typing.Optional[str] = None,
+    config: dict,
     demo_mode: bool = True,
     verbose: bool = True,
 ):
@@ -290,5 +290,5 @@ def run_control_panel(
         Defaults to True.
     """
     root = tk.Tk()
-    ControlPanel(root, demo_mode=demo_mode, launcher_ip=launcher_ip, verbose=verbose)
+    ControlPanel(root, demo_mode=demo_mode, config=config, verbose=verbose)
     root.mainloop()

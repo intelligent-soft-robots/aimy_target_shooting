@@ -23,7 +23,7 @@ def get_config_path(config_name: str) -> pathlib.Path:
 
 def get_default_path() -> pathlib.Path:
     """Returns default path for storing data. Usually data is
-    stored on the Desktop.
+    stored on the Desktop (~/Desktop/target_shooting).
 
     Returns:
         pathlib.Path: Storing location.
@@ -37,7 +37,7 @@ def get_default_path() -> pathlib.Path:
 
 
 def get_temp_path() -> pathlib.Path:
-    """Returns temporary path. The temporary directory is
+    """Returns temporary path (/tmp/target_shooting/). The temporary directory  is
     cleaned after each reboot.
 
     Returns:

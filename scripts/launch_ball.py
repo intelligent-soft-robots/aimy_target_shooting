@@ -1,20 +1,29 @@
+import json
 import pathlib
 
 from aimy_target_shooting.ball_launcher_api import BallLauncherAPI
+from aimy_target_shooting.configuration import get_config_path
 from aimy_target_shooting.recording import Recording
 
 
 def launch():
-    launcher = BallLauncherAPI("10.42.26.171", 5555)
+    path = get_config_path("launcher")
+    with open(path, "r") as file:
+        config = json.load(file)
+
+    launcher = BallLauncherAPI(config)
     launcher.set_rpm(0.5, 0.0, 0, 0, 0)
     launcher.launch()
 
 
 def launch_and_record():
-    launcher = "10.42.26.171"
+    path = get_config_path("launcher")
+    with open(path, "r") as file:
+        config = json.load(file)
+
     launch_parameters = (0.5, 0.5, 800, 800, 1600)
 
-    env = Recording(launcher_ip=launcher)
+    env = Recording(config)
 
     env.set_launch_parameters(launch_parameters, parameter_type="rpm")
     env.record_and_launch()

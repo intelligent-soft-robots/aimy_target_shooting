@@ -1,4 +1,3 @@
-import json
 import logging
 import pathlib
 import time
@@ -8,7 +7,6 @@ import signal_handler
 import tennicam_client
 
 from aimy_target_shooting.ball_launcher_api import BallLauncherAPI
-from aimy_target_shooting.configuration import get_config_path
 from aimy_target_shooting.custom_types import (
     LaunchParameter,
     TrajectoryCollection,
@@ -27,25 +25,18 @@ class Recording:
     the agent.
     """
 
-    def __init__(self, launcher_ip: str = None) -> None:
+    def __init__(self, config: dict) -> None:
         """Initialises recording environment.
 
         Args:
-            launcher_ip (str, optional): IP address of launcher. Defaults to None.
+            config (dict): Configuration file with recording parameters.
         """
-        path = get_config_path("recording")
-        with open(path, "r") as file:
-            config = json.load(file)
-
         self.record_duration_s = config["recording_param"]["recording_duration"]
         self.tennicam_segment_id = config["recording_param"]["tennicam_segment_id"]
 
         self.trajectory_collection = TrajectoryCollection()
 
-        if launcher_ip is None:
-            launcher_ip = config["recording_param"]["ip"]
-
-        self.launcher = BallLauncherAPI(launcher_ip=launcher_ip)
+        self.launcher = BallLauncherAPI(config)
 
     def set_launch_parameters(
         self, launch_parameters: LaunchParameter, parameter_type: str = "rpm"

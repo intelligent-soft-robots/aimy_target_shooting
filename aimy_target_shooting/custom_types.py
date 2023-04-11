@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import typing
+from enum import Enum
 from typing import Iterator, List, Optional
 
 Position3D = typing.Tuple[float, float, float]
@@ -15,9 +16,11 @@ VelocityTrajectory = typing.List[Velocity3D]
 
 
 class TrajectoryData:
-    """Container for trajectory data default storing launch
-    parameter, time stamps, positions and velocities.
-    TrajectoryData information can be fetched via keys.
+    """Data structure for storing and processing of trajectory data.
+    TrajectoryData stors by default the launch parameters, time stamps,
+    positions and velocities.
+    Stored variables can be fetched similar to Dicts via the keys or directly
+    as object of the structure.
     """
 
     def __init__(self, trajectory_data: TrajectoryData = None) -> None:
@@ -25,8 +28,9 @@ class TrajectoryData:
         other trajectory data, where the given trajectory data is copied.
 
         Args:
-            trajectory_data (TrajectoryData, optional): Data to be copied
-            to new trajectory data. Defaults to None.
+            trajectory_data (TrajectoryData, optional): Optionally the new
+            TrajectoryData object can copy information from existing
+            TrajectoryData object. Defaults to None.
         """
         self.start_time: Optional[float] = None
 
@@ -290,3 +294,10 @@ class TrajectoryCollection:
             index (int): Deletion index.
         """
         del self._collection[index]
+
+
+class TransformTimeUnits(Enum):
+    Seconds = 1e-9
+    Milliseconds = 1e-6
+    Microseconds = 1e-3
+    Nanoseconds = 1e-0

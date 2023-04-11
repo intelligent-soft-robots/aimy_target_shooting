@@ -1,11 +1,9 @@
-import json
 import warnings
 
 import numpy as np
 from ball_launcher_beepy import BallLauncherClient
 from scipy.interpolate import interp1d
 
-from aimy_target_shooting.configuration import get_config_path
 from aimy_target_shooting.utility import ip_to_launcher_name
 
 
@@ -14,18 +12,17 @@ class BallLauncherAPI:
     BallLauncherClient class with custom functions.
     """
 
-    def __init__(self, launcher_ip: str, launcher_port: int = 5555) -> None:
+    def __init__(self, config: dict) -> None:
         """Initialises BallLauncher class.
         Remark: Ball launcher and operating device have to be in same network.
 
         Args:
-            launcher_ip (str, optional): Network internal IPv4 address satisfying
-            RFC 791. Defaults to "10.42.31.174".
-            launcher_port (int, optional): Network internal IPv4 port satisfying
-            RFC 791. Defaults to 5555.
+            config (dict): Configuration file.
         """
-        self._launcher_ip = launcher_ip
-        self._launcher_port = launcher_port
+        self.config = config
+
+        self._launcher_ip = config["launcher_ip"]
+        self._launcher_port = config["launcher_port"]
         self._client = BallLauncherClient(self._launcher_ip, self._launcher_port)
 
     def set_actuation(
@@ -80,21 +77,16 @@ class BallLauncherAPI:
             bottom_center_actuation (float, optional): Activation of the bottom
             center motor. Defaults to 0.0.
         """
-        path = get_config_path("launcher")
-        with open(path, "r") as file:
-            config = json.load(file)
-
         launcher = ip_to_launcher_name(self._launcher_ip)
-
-        fitting_method = config["fitting_method"]
-
-        rpm_tl = config[launcher]["rpm_tl"]
-        rpm_tr = config[launcher]["rpm_tr"]
-        rpm_bc = config[launcher]["rpm_bc"]
+        print(self.config)
+        fitting_method = self.config["fitting_method"]
+        rpm_tl = self.config[launcher]["rpm_tl"]
+        rpm_tr = self.config[launcher]["rpm_tr"]
+        rpm_bc = self.config[launcher]["rpm_bc"]
 
         rpm_list = [rpm_top_left, rpm_top_right, rpm_bottom_center]
 
-        actuation = config[launcher]["actuation"]
+        actuation = self.config[launcher]["actuation"]
 
         set_flag = True
         minimum_rpm = float(max([min(rpm_tr), min(rpm_tl), min(rpm_bc)]))

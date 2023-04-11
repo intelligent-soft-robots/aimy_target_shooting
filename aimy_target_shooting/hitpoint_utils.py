@@ -1,4 +1,5 @@
 import logging
+from typing import Sequence
 
 import numpy as np
 
@@ -45,8 +46,8 @@ def remove_further_hitpoints(
 def cherry_pick_hitpoint(
     trajectory_collection: TrajectoryCollection, index_hitpoint: int = 1
 ) -> TrajectoryCollection:
-    """Utility function for picking a single hitpoint by index. All other
-    hitpoints are omitted.
+    """Utility function for removing all detected hitpoints not specified by
+    index_hitpoint from TrajectoryCollection.
 
     Args:
         trajectory_collection (TrajectoryCollection): Trajectory collection
@@ -94,11 +95,11 @@ def average_close_hitpoints(
         trajectory.
     """
 
-    def euclidian_distance(point_1, point_2):
+    def euclidian_distance(point_1: Sequence[float], point_2: Sequence[float]):
         euc_distance: float = np.linalg.norm(np.array(point_2) - np.array(point_1))
         return euc_distance
 
-    def average(point_1, point_2):
+    def average(point_1: Sequence[float], point_2: Sequence[float]):
         return np.average([point_1, point_2], axis=0)
 
     trajectory_collection = trajectory_collection.deepcopy()

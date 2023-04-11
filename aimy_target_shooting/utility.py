@@ -18,7 +18,7 @@ def to_tuple_list(numpy_list: np.ndarray) -> typing.Union[Position3D, Velocity3D
         position (or velocity) trajectory.
 
     Returns:
-        list: List of position (or velocity) tuples.
+        Position3D or Velocity3D: Position3D or Velocity3D information.
     """
     return [tuple(entry) for entry in numpy_list]
 

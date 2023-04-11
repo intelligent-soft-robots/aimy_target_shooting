@@ -24,7 +24,7 @@
         ],
         "first_point_reference": 0
     },
-    "volatile_samples": {
+    "noisy_samples": {
         "threshold": 0.05,
         "window_size": 18
     },

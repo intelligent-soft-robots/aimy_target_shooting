@@ -17,8 +17,8 @@ class DataScaler:
         """Initialises scaler.
 
         Args:
-            scaling (str, optional): Scaling method.
-            Defaults to "standard".
+            scaling (str, optional): Scaling method. Supports standard and
+            minmax scaling. Defaults to "standard".
             bias_value (float, optional): Predefined bias value.
             Defaults to None.
             scaling_value (float, optional): Predefined scaling value.

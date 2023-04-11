@@ -1,9 +1,11 @@
+import json
 import logging
 import pathlib
 
 import numpy as np
 
 from aimy_target_shooting.ball_launcher_api import BallLauncherAPI
+from aimy_target_shooting.configuration import get_config_path
 from aimy_target_shooting.target_shooting_nn import TargetShootingNN
 
 
@@ -14,7 +16,11 @@ def train_target_shooting():
         "MN5008_grid_data_all.hdf5"
     )
 
-    nn = TargetShootingNN()
+    path = get_config_path("learning")
+    with open(path, "r") as file:
+        config = json.load(file)
+
+    nn = TargetShootingNN(config)
     nn.generate_dataset(filepath=file_path)
     nn.generate_MLP_model()
     nn.train_model()
@@ -24,7 +30,11 @@ def train_target_shooting():
 
 
 def launch_ball_loaded_model():
-    launcher = BallLauncherAPI(launcher_ip="10.42.26.171")
+    path = get_config_path("launcher")
+    with open(path, "r") as file:
+        config = json.load(file)
+
+    launcher = BallLauncherAPI(config)
 
     nn = TargetShootingNN()
     nn.load_model(pathlib.Path("/tmp/nn_model/model.hdf5"))

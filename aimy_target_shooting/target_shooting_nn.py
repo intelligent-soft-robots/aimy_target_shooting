@@ -1,5 +1,4 @@
 import datetime
-import json
 import logging
 import pathlib
 import typing
@@ -8,20 +7,15 @@ import numpy as np
 import tensorflow as tf
 
 from aimy_target_shooting import export_tools
-from aimy_target_shooting.configuration import get_config_path
 from aimy_target_shooting.data_scaler import DataScaler
 from aimy_target_shooting.learning_utils import generate_full_training_data
 
 
 class TargetShootingNN:
-    def __init__(self, verbose=True) -> None:
+    def __init__(self, config: dict, verbose: bool = True) -> None:
         self.model = None
-
+        self.conf = config
         self.verbose = verbose
-
-        path = get_config_path("learning")
-        with open(path, "r") as file:
-            self.conf = json.load(file)
 
     def load_model(self, import_path: pathlib.Path) -> None:
         """Loads a model from given import path.
@@ -35,6 +29,12 @@ class TargetShootingNN:
             logging.info("Model loaded.")
 
     def load_scaling(self, import_path: pathlib.Path = None) -> None:
+        """Loads scaling from file specified by import_path.
+
+        Args:
+            import_path (pathlib.Path, optional): Location of file with scaling
+            parameters. Defaults to None.
+        """
         if import_path is None:
             import_path = "/tmp/nn_model/"
 
@@ -155,13 +155,6 @@ class TargetShootingNN:
 
     def train_model(
         self,
-        epochs: typing.Optional[int] = None,
-        optimizer: typing.Optional[str] = None,
-        batch_size: typing.Optional[int] = None,
-        verbose: typing.Optional[int] = None,
-        validation_split: typing.Optional[float] = None,
-        checkpoint_name: typing.Optional[str] = None,
-        learning_rate: typing.Optional[float] = None,
     ) -> None:
         """Trains given keras model.
 
@@ -189,30 +182,16 @@ class TargetShootingNN:
 
         tf.keras.backend.clear_session()
 
-        path = get_config_path("learning")
-        with open(path, "r") as file:
-            conf = json.load(file)
-
-        if epochs is None:
-            epochs = conf["training"]["epochs"]
-
-        if optimizer is None:
-            optimizer = conf["training"]["optimizer"]
-
-        if batch_size is None:
-            batch_size = conf["training"]["batch_size"]
-
-        if verbose is None:
-            verbose = conf["training"]["verbose"]
-
-        if validation_split is None:
-            validation_split = conf["training"]["validation_split"]
-
-        if learning_rate is None:
-            learning_rate = conf["training"]["learning_rate"]
-
-        if checkpoint_name is None:
-            checkpoint_name = conf["training"]["checkpoint_name"]
+        try:
+            epochs = self.conf["training"]["epochs"]
+            optimizer = self.conf["training"]["optimizer"]
+            batch_size = self.conf["training"]["batch_size"]
+            verbose = self.conf["training"]["verbose"]
+            validation_split = self.conf["training"]["validation_split"]
+            learning_rate = self.conf["training"]["learning_rate"]
+            checkpoint_name = self.conf["training"]["checkpoint_name"]
+        except Exception as e:
+            raise AttributeError(f"Parameter not given in configuration file. {e}")
 
         log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 

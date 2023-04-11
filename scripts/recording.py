@@ -28,11 +28,10 @@ def grid_search() -> None:
     actuation_upper_threshold = config["gridsearch_param"]["actuation_upper_threshold"]
     actuation_lower_threshold = config["gridsearch_param"]["actuation_lower_threshold"]
 
-    launcher_ip = config["recording_param"]["ip"]
     dir_path = pathlib.Path(config["recording_param"]["save_path"])
     prefix = config["recording_param"]["prefix"]
 
-    env = Recording(launcher_ip=launcher_ip)
+    env = Recording(config=config)
 
     phi_space = np.linspace(phi_range[0], phi_range[1], n_phi_steps)
     theta_space = np.linspace(theta_range[0], theta_range[1], n_theta_steps)
@@ -92,8 +91,6 @@ def run_single_measurement() -> None:
 
     prefix = config["recording_param"]["prefix"]
 
-    launcher_ip = config["recording_param"]["ip"]
-
     launch_parameters = (
         config["single_measurement"]["phi"],
         config["single_measurement"]["theta"],
@@ -102,7 +99,7 @@ def run_single_measurement() -> None:
         config["single_measurement"]["omega_bc"],
     )
 
-    env = Recording(launcher_ip=launcher_ip)
+    env = Recording(config)
 
     env.set_launch_parameters(launch_parameters)
     env.record_and_launch()
@@ -121,7 +118,6 @@ def run_multiple_measurements() -> None:
     logging.info(f"Saving path: {dir_path}")
 
     prefix = config["recording_param"]["prefix"]
-    launcher_ip = config["recording_param"]["ip"]
     number_shots = config["multiple_measurements"]["number_shots"]
 
     launch_parameters = (
@@ -132,7 +128,7 @@ def run_multiple_measurements() -> None:
         config["multiple_measurements"]["omega_bc"],
     )
 
-    env = Recording(launcher_ip=launcher_ip)
+    env = Recording(config)
 
     env.set_launch_parameters(launch_parameters)
 

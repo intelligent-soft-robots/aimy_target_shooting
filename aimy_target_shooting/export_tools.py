@@ -17,7 +17,7 @@ def import_from_hdf5(
     import_velocities: bool = True,
 ) -> TrajectoryData:
     """Imports ball data from HDF5 file specified in path argument from specified
-    group and index. Imported data is stored in data manager.
+    group and index. Imported data is stored in TrajectoryData.
 
     Args:
         index (int): Index of trajectory to be imported.
@@ -64,7 +64,7 @@ def import_all_from_hdf5(
     import_velocities: bool = True,
 ) -> TrajectoryCollection:
     """Imports all stored ball data from HDF5 file specified in given path argument
-    from desired group. Imported data is stored in data manager.
+    from desired group. Imported data is stored in TrajectoryCollection.
 
     Args:
         group (str, optional): Nested group within HDF5 file. Defaults to
@@ -113,7 +113,7 @@ def export_to_hdf5(
     prefix: str = "ball_trajectories",
     clear_storage: bool = False,
 ) -> None:
-    """Exports stored ball data in data manager to HDF5 file specified in path
+    """Exports stored ball data in TrajectoryCollection to HDF5 file specified in path
     argument. Name of file can be specified via prefix argument.
 
     Args:
@@ -126,7 +126,7 @@ def export_to_hdf5(
         export. Defaults to False.
 
     Raises:
-        IndexError: Raised if no data is stored in data manager.
+        IndexError: Raised if no data is stored in TrajectoryCollection.
     """
     if not trajectory_collection:
         raise IndexError("No trajectory is stored in trajectory collection.")
@@ -173,7 +173,7 @@ def import_from_csv(
     import_velocities: bool = True,
 ) -> TrajectoryData:
     """Imports ball data from CSV file specified in path argument.
-    Imported data is stored in data manager.
+    Imported data is stored in TrajectoryCollection.
 
     Args:
         file_path (pathlib.Path): File location
@@ -222,7 +222,7 @@ def import_all_from_csv(
     import_velocities: bool = True,
 ) -> TrajectoryCollection:
     """Imports ball data from all CSV files in specified directory path argument.
-    Imported data is stored in data manager.
+    Imported data is stored in TrajectoryCollection.
 
     Args:
         directory_path (str, optional): Directory location. Defaults to None.
@@ -329,7 +329,8 @@ def export_data(
 
     Args:
         trajectory_collection (TrajectoryCollection): List of trajectory data.
-        export_format (str, optional): Export data format. Defaults to "hdf5".
+        export_format (str, optional): Export data format. Supports "hdf5" and "csv".
+        Defaults to "hdf5".
         export_path (str, optional): Export path. Defaults to None.
         prefix (str, optional): File name for exported files. Defaults to
         "ball_trajectories".
@@ -337,11 +338,11 @@ def export_data(
         after export. Defaults to False.
 
     Raises:
-        IndexError: Raised if no ball data is stored in data manager.
+        IndexError: Raised if no ball data is stored in TrajectoryCollection.
         ValueError: Raised if export data format is not supported.
     """
     if not trajectory_collection:
-        raise IndexError("No trajectory is stored in data manager.")
+        raise IndexError("No trajectory is stored in TrajectoryCollection")
 
     if export_format == "hdf5":
         export_to_hdf5(

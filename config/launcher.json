@@ -1,4 +1,6 @@
 {
+    "launcher_ip": "10.42.26.171",
+    "launcher_port": 5555,
     "launcher": "v2_offset",
     "fitting_method": "linear",
     "v2_offset": {

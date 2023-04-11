@@ -1,16 +1,14 @@
-import json
 import typing
 
 import numpy as np
 
-from aimy_target_shooting.configuration import get_config_path
 from aimy_target_shooting.custom_types import TrajectoryCollection, TrajectoryData
 from aimy_target_shooting.hitpoint_detection import HitPointDetection
 from aimy_target_shooting.utility import cartesian_to_polar
 
 
 def generate_full_training_data(
-    trajectory_collection: TrajectoryCollection,
+    trajectory_collection: TrajectoryCollection, config: dict
 ) -> typing.List[np.ndarray]:
     """Generates training data with the mapping of control parameters
     to each sample of each ball trajectory in given collection.
@@ -23,11 +21,7 @@ def generate_full_training_data(
         typing.List[np.ndarray, np.ndarray]: training data set with
         target states and training labels with control parameters.
     """
-    path = get_config_path("learning")
-    with open(path, "r") as file:
-        conf = json.load(file)
-
-    fitting_window = conf["dataset_generation"]["fitting_window"]
+    fitting_window = config["dataset_generation"]["fitting_window"]
 
     control_parameters = []
     target_variables = []
@@ -39,7 +33,7 @@ def generate_full_training_data(
             positions = trajectory_data.positions[idx]
             velocities = extract_velocities(trajectory_data, idx, fitting_window)
 
-            trg_params = create_targets(positions, velocities)
+            trg_params = create_targets(positions, velocities, config)
 
             control_parameters.append(ctl_params)
             target_variables.append(trg_params)
@@ -52,6 +46,7 @@ def generate_full_training_data(
 
 def generate_hitpoint_training_data(
     trajectory_collection: TrajectoryCollection,
+    config: dict,
 ) -> typing.List[np.ndarray]:
     """Generates training data with the mapping of control parameters
     to each detected hitpoint of each ball trajectory of given collection.
@@ -64,11 +59,7 @@ def generate_hitpoint_training_data(
         typing.List[np.ndarray, np.ndarray]: training data set with
         target states and training labels with control parameters.
     """
-    path = get_config_path("learning")
-    with open(path, "r") as file:
-        conf = json.load(file)
-
-    fitting_window = conf["dataset_generation"]["fitting_window"]
+    fitting_window = config["dataset_generation"]["fitting_window"]
 
     evaluator = HitPointDetection()
     trajectory_collection = evaluator.evaluate_hitpoints(trajectory_collection)
@@ -91,7 +82,7 @@ def generate_hitpoint_training_data(
 
         velocities = extract_velocities(trajectory_data, index, fitting_window)
 
-        trg_params = create_targets(positions, velocities)
+        trg_params = create_targets(positions, velocities, config)
 
         control_parameters.append(ctl_params)
         target_variables.append(trg_params)
@@ -102,7 +93,9 @@ def generate_hitpoint_training_data(
     return control_parameters, target_variables
 
 
-def create_targets(positions: np.ndarray, velocities: np.ndarray) -> np.ndarray:
+def create_targets(
+    positions: np.ndarray, velocities: np.ndarray, config: dict
+) -> np.ndarray:
     """Creates target states according to JSON config
     file.
 
@@ -114,41 +107,37 @@ def create_targets(positions: np.ndarray, velocities: np.ndarray) -> np.ndarray:
         np.ndarray: Target parameters according to configuration
         file.
     """
-    path = get_config_path("learning")
-    with open(path, "r") as file:
-        conf = json.load(file)
-
     trg_params = []
     alpha, beta = compute_direction(velocities)
 
-    if conf["dataset_generation"]["polar_transform"]:
+    if config["dataset_generation"]["polar_transform"]:
         positions = cartesian_to_polar(*positions)
 
-    if conf["dataset_generation"]["p_x"]:
+    if config["dataset_generation"]["p_x"]:
         trg_params.append(positions[0])
 
-    if conf["dataset_generation"]["p_y"]:
+    if config["dataset_generation"]["p_y"]:
         trg_params.append(positions[1])
 
-    if conf["dataset_generation"]["p_z"]:
+    if config["dataset_generation"]["p_z"]:
         trg_params.append(positions[2])
 
-    if conf["dataset_generation"]["v_x"]:
+    if config["dataset_generation"]["v_x"]:
         trg_params.append(velocities[0])
 
-    if conf["dataset_generation"]["v_y"]:
+    if config["dataset_generation"]["v_y"]:
         trg_params.append(velocities[1])
 
-    if conf["dataset_generation"]["v_z"]:
+    if config["dataset_generation"]["v_z"]:
         trg_params.append(velocities[2])
 
-    if conf["dataset_generation"]["alpha"]:
+    if config["dataset_generation"]["alpha"]:
         trg_params.append(alpha)
 
-    if conf["dataset_generation"]["beta"]:
+    if config["dataset_generation"]["beta"]:
         trg_params.append(beta)
 
-    if conf["dataset_generation"]["v_mag"]:
+    if config["dataset_generation"]["v_mag"]:
         v_abs = np.linalg.norm(velocities)
         trg_params.append(v_abs)
 

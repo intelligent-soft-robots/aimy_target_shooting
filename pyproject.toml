@@ -8,7 +8,15 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "aimy_target_shooting"
 version = "0.0.1"
+requires-python = ">3.8"
 dependencies = [
     "requests",
-    'importlib-metadata; python_version<"3.8"',
+    "numpy",
+    "pandas",
+    "scipy",
+    "matplotlib",
+    "h5py",
+    "pytest",
+    "seaborn",
+    "tensorflow",
 ]

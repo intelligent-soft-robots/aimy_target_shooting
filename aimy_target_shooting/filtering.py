@@ -1,21 +1,17 @@
-import json
 import logging
-from typing import List, Optional
 
 import numpy as np
 from scipy.signal import butter, find_peaks, savgol_filter, sosfilt
 
-from aimy_target_shooting.configuration import get_config_path
 from aimy_target_shooting.custom_types import TrajectoryCollection
 from aimy_target_shooting.utility import to_tuple_list
 
 
-def filter_volatile_samples(
+def filter_noisy_samples(
     trajectory_collection: TrajectoryCollection,
-    threshold: float = None,
-    window_size: int = None,
+    config: dict,
 ) -> TrajectoryCollection:
-    """Filters volatile samples from trajectory collection.
+    """Filters noisy samples from trajectory collection.
 
     Args:
         trajectory_collection (TrajectoryCollection): Stored
@@ -30,18 +26,14 @@ def filter_volatile_samples(
     """
     modified_trajectory_collection = trajectory_collection.deepcopy()
 
-    path = get_config_path("preprocessing")
-    with open(path, "r") as file:
-        config = json.load(file)
-
-    if threshold is None:
-        threshold = config["volatile_samples"]["threshold"]
-
-    if window_size is None:
-        window_size = config["volatile_samples"]["window_size"]
+    try:
+        threshold = config["noisy_samples"]["threshold"]
+        window_size = config["noisy_samples"]["window_size"]
+    except Exception as e:
+        raise AttributeError(f"Configuration does not include parameters. {e}")
 
     for trajectory_data in modified_trajectory_collection:
-        positions = np.array(trajectory_data["positions"])
+        positions = np.array(trajectory_data.positions)
 
         removal_counter = 0
         removal_indices = []
@@ -71,9 +63,9 @@ def filter_volatile_samples(
                     removal_indices.append(i)
 
         for idx in sorted(removal_indices, reverse=True):
-            del trajectory_data["time_stamps"][idx]
-            del trajectory_data["positions"][idx]
-            del trajectory_data["velocities"][idx]
+            del trajectory_data.time_stamps[idx]
+            del trajectory_data.positions[idx]
+            del trajectory_data.velocities[idx]
 
         logging.info(f"{removal_counter} samples removed.")
 
@@ -82,9 +74,7 @@ def filter_volatile_samples(
 
 def filter_samples_outside_region(
     trajectory_collection: TrajectoryCollection,
-    xlimit: List[float] = None,
-    ylimit: List[float] = None,
-    zlimit: List[float] = None,
+    config: dict,
 ) -> TrajectoryCollection:
     """Filters samples outside of specified spatial limits.
 
@@ -101,18 +91,12 @@ def filter_samples_outside_region(
     Returns:
         TrajectoryCollection: Modified trajectories.
     """
-    path = get_config_path("preprocessing")
-    with open(path, "r") as file:
-        config = json.load(file)
-
-    if xlimit is None:
+    try:
         xlimit = config["outlier_cut"]["xlimit"]
-
-    if ylimit is None:
         ylimit = config["outlier_cut"]["ylimit"]
-
-    if zlimit is None:
         zlimit = config["outlier_cut"]["zlimit"]
+    except Exception as e:
+        raise AttributeError(f"Configuration does not include parameters. {e}")
 
     limits = [xlimit, ylimit, zlimit]
 
@@ -139,9 +123,7 @@ def filter_samples_outside_region(
 
 def filter_samples_after_first_rebound(
     trajectory_collection: TrajectoryCollection,
-    offset: Optional[float] = None,
-    threshold: Optional[float] = None,
-    distance: Optional[int] = None,
+    config: dict,
 ) -> TrajectoryCollection:
     """Removes all samples after first rebound of each trajectory stored
     in given trajectory collection. The rebound is defined by the sample
@@ -158,18 +140,12 @@ def filter_samples_after_first_rebound(
     Returns:
         TrajectoryCollection: Modified trajectories.
     """
-    path = get_config_path("preprocessing")
-    with open(path, "r") as file:
-        config = json.load(file)
-
-    if offset is None:
+    try:
         offset = config["rebound_filter"]["offset"]
-
-    if threshold is None:
         threshold = config["rebound_filter"]["threshold"]
-
-    if distance is None:
         distance = config["rebound_filter"]["distance"]
+    except Exception as e:
+        raise AttributeError(f"Configuration does not include parameters. {e}")
 
     modified_trajectory_collection = trajectory_collection.deepcopy()
 
@@ -201,14 +177,14 @@ def filter_samples_after_first_rebound(
 
 
 def filter_samples_after_time_stamp(
-    trajectory_collection: TrajectoryCollection, max_time_stamp: Optional[float] = None
+    trajectory_collection: TrajectoryCollection,
+    config: dict,
 ) -> TrajectoryCollection:
-    if max_time_stamp is None:
-        path = get_config_path("preprocessing")
-        with open(path, "r") as file:
-            config = json.load(file)
 
+    try:
         max_time_stamp = config["time_stamp_filter"]["max_time_stamp"]
+    except Exception as e:
+        raise AttributeError(f"Configuration does not include parameters. {e}")
 
     modified_trajectory_collection = trajectory_collection.deepcopy()
 
@@ -234,6 +210,7 @@ def filter_samples_after_time_stamp(
 
 def smooth_samples(
     trajectory_collection: TrajectoryCollection,
+    config: dict,
 ) -> TrajectoryCollection:
     """Smoothes position and velocities samples of given trajectory
     collection with smoothing method specified in JSON configuration
@@ -247,17 +224,17 @@ def smooth_samples(
         TrajectoryCollection: Trajectory collection with smoothed
         positions and velocities.
     """
-    path = get_config_path("preprocessing")
-    with open(path, "r") as file:
-        config = json.load(file)
 
-    smoothing_method = config["smoothing_method"]
+    try:
+        smoothing_method = config["smoothing_method"]
+    except Exception as e:
+        raise AttributeError(f"Configuration does not include parameters. {e}")
 
     smoothed_trajectory_collection = trajectory_collection.deepcopy()
 
     for trajectory_data in smoothed_trajectory_collection:
-        positions = np.array(trajectory_data["positions"])
-        velocities = np.array(trajectory_data["velocities"])
+        positions = np.array(trajectory_data.positions)
+        velocities = np.array(trajectory_data.velocities)
 
         for i in range(3):
             if smoothing_method == "savitzky-golay":
@@ -283,17 +260,18 @@ def smooth_samples(
                 sos = butter(order, cutoff_frequency, "lowpass", output="sos")
                 velocities[:, i] = sosfilt(sos, velocities[:, i])
 
-        trajectory_data["positions"] = to_tuple_list(positions)
-        trajectory_data["velocities"] = to_tuple_list(velocities)
+        trajectory_data.positions = to_tuple_list(positions)
+        trajectory_data.velocities = to_tuple_list(velocities)
 
     return smoothed_trajectory_collection
 
 
 def remove_patchy_trajectories(
-    trajectory_collection: TrajectoryCollection, max_patch_size: float = None
+    trajectory_collection: TrajectoryCollection,
+    config: dict,
 ) -> TrajectoryCollection:
-    """Removes trajectories from given trajectory collection if spacing
-    between samples exceed a limit value.
+    """Removes trajectories from given trajectory collection if temporal
+    difference between subsequent samples exceed a limit value.
 
     Parameter fetched from JSON:
         max_patch_size (float): maximum allowed gap in seconds.
@@ -307,12 +285,10 @@ def remove_patchy_trajectories(
     """
     modified_trajectory_collection = trajectory_collection.deepcopy()
 
-    if max_patch_size is None:
-        path = get_config_path("preprocessing")
-        with open(path, "r") as file:
-            config = json.load(file)
-
+    try:
         max_patch_size = config["patchy_trajectories"]["max_patch_size"]
+    except Exception as e:
+        raise AttributeError(f"Configuration does not include parameters. {e}")
 
     for idx in reversed(range(len(modified_trajectory_collection))):
         trajectory_data = modified_trajectory_collection.get_item(idx)
@@ -327,7 +303,8 @@ def remove_patchy_trajectories(
 
 
 def remove_short_trajectories(
-    trajectory_collection: TrajectoryCollection, min_length: Optional[int] = None
+    trajectory_collection: TrajectoryCollection,
+    config: dict,
 ) -> TrajectoryCollection:
     """Removes trajectories from trajectory collection with length
     smaller than specified minimum length. For example, empty trajectories.
@@ -343,17 +320,15 @@ def remove_short_trajectories(
     """
     modified_trajectory_collection = trajectory_collection.deepcopy()
 
-    if min_length is None:
-        path = get_config_path("preprocessing")
-        with open(path, "r") as file:
-            config = json.load(file)
-
+    try:
         min_length = config["empty_trajectories"]["min_length"]
+    except Exception as e:
+        raise AttributeError(f"Configuration does not include parameters. {e}")
 
     for idx in reversed(range(len(modified_trajectory_collection))):
         trajectory_data = modified_trajectory_collection.get_item(idx)
 
-        if len(trajectory_data["positions"]) < min_length:
+        if len(trajectory_data.positions) < min_length:
             modified_trajectory_collection.delete_item(idx)
 
     return modified_trajectory_collection

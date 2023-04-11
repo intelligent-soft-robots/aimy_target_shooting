@@ -1,11 +1,7 @@
-import json
-from typing import Optional
-
 import numpy as np
 from scipy.interpolate import InterpolatedUnivariateSpline, make_interp_spline
 from scipy.signal import find_peaks
 
-from aimy_target_shooting.configuration import get_config_path
 from aimy_target_shooting.custom_types import TrajectoryCollection, TrajectoryData
 
 
@@ -16,47 +12,12 @@ class HitPointDetection:
 
     def __init__(
         self,
-        axis: Optional[int] = None,
-        offset: Optional[float] = None,
-        distance: Optional[int] = None,
-        position_threshold: Optional[float] = None,
-        acceleration_threshold: Optional[float] = None,
-        polynom_order: Optional[float] = None,
-        use_windows: Optional[bool] = None,
-        window_size: Optional[int] = None,
-        root_eval_radius: Optional[int] = None,
-        position_based_discontinuities: Optional[bool] = None,
-        rebound_regression: Optional[bool] = None,
+        config: dict,
     ) -> None:
         """Initialises hit point detector with given attributes.
 
         Args:
-            axis (Optional[int], optional): Hit point axis encoded as int (e.g. 1 for
-            x-axis). Defaults to None.
-            offset (Optional[float], optional): Offset of hit point axis to origin.
-            Defaults to None.
-            distance (Optional[int], optional): Number of neighboring samples to peak
-            not to be considered as peak.
-            Defaults to None.
-            position_threshold (Optional[float], optional): Threshold for detecting
-            peaks. Defaults to None.
-            acceleration_threshold (Optional[float], optional): Threshold for
-            detecting peaks via acceleration jumps. Defaults to None.
-            polynom_order (Optional[float], optional): Approximation order for
-            intersecting polynomials. Defaults to None.
-            use_windows (Optional[bool], optional): Only consider intersections of
-            polynomials within certain window. Defaults to None.
-            window_size (Optional[int], optional): Window size for detecting peaks.
-            Defaults to None.
-            root_eval_radius (Optional[int], optional): Size of evaluation region of
-            intersecting polynomials. Smaller region prevents accidentially found roots.
-            Defaults to None.
-            position_based_discontinuities (Optional[bool], optional): Specifier if
-            discontiunity points should be found by position based peak or
-            acceleration. Defaults to None.
-            rebound_regression (Optional[bool], optional): Specifier, if hit point
-            should be approximated with polynomials or discontinuity point should
-            be used. Defaults to None.
+            config (dict): Includes all parameters for hit point detection.
 
         Raises:
             ValueError: Raised if axis is not 0, 1 or 2.
@@ -64,72 +25,28 @@ class HitPointDetection:
         """
         self.TABLE_HEIGHT = 0.76
 
-        path = get_config_path("hitpoint")
-        with open(path, "r") as file:
-            config = json.load(file)
-
-        if axis is None:
+        try:
             self.axis = config["axis"]
-
-            if self.axis not in [0, 1, 2]:
-                raise ValueError(f"Axis {self.axis} must be 0, 1, 2!")
-        else:
-            self.axis = axis
-
-        if offset is None:
             self.offset = config["offset"]
-        else:
-            self.offset = offset
-
-        if position_threshold is None:
             self.position_threshold = config["position_threshold"]
-        else:
-            self.position_threshold = position_threshold
-
-        if acceleration_threshold is None:
             self.acceleration_threshold = config["acceleration_threshold"]
-        else:
-            self.acceleration_threshold = acceleration_threshold
-
-        if distance is None:
             self.distance = config["distance"]
-        else:
-            self.distance = distance
-
-        if polynom_order is None:
             self.polynom_order = config["polynom_order"]
-        else:
-            self.polynom_order = polynom_order
-
-        if use_windows is None:
             self.use_windows = config["use_windows"]
-        else:
-            self.use_windows = use_windows
-
-        if window_size is None:
             self.window_size = config["window_size"]
-        else:
-            self.window_size = window_size
+            self.root_eval_radius = config["root_eval_radius"]
+            self.position_based_indices = config["position_based_indices"]
+            self.regression = config["regression"]
+        except Exception as e:
+            raise AttributeError(f"Configuration does not include parameters. {e}")
 
         if self.window_size < self.polynom_order:
             raise ValueError(
                 "Window size has to be equally or larger then polynom order."
             )
 
-        if root_eval_radius is None:
-            self.root_eval_radius = config["root_eval_radius"]
-        else:
-            self.root_eval_radius = root_eval_radius
-
-        if position_based_discontinuities is None:
-            self.position_based_indices = config["position_based_indices"]
-        else:
-            self.position_based_indices = position_based_discontinuities
-
-        if rebound_regression is None:
-            self.regression = config["regression"]
-        else:
-            self.regression = rebound_regression
+        if self.axis not in [0, 1, 2]:
+            raise ValueError(f"Axis {self.axis} must be 0, 1, 2!")
 
     def evaluate_hitpoints(
         self, trajectory_collection: TrajectoryCollection
