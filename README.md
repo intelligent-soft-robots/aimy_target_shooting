@@ -51,8 +51,7 @@ To cite **AIMY** in your academic research, please use the following bibtex line
       author={Alexander Dittrich and Jan Schneider and Simon Guist and Nico Gürtler and Heiko Ott and Thomas Steinbrenner and Bernhard Schölkopf and Dieter Büchler},
       year={2023},
       eprint={2210.06048},
-      archivePrefix={arXiv},
-      primaryClass={cs.RO}
+      archivePrefix={arXiv}
 }
 ```
 
