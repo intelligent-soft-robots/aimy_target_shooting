@@ -78,7 +78,7 @@ class BallLauncherAPI:
             center motor. Defaults to 0.0.
         """
         launcher = ip_to_launcher_name(self._launcher_ip)
-        print(self.config)
+
         fitting_method = self.config["fitting_method"]
         rpm_tl = self.config[launcher]["rpm_tl"]
         rpm_tr = self.config[launcher]["rpm_tr"]
