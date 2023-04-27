@@ -1,0 +1,15 @@
+# Required packages for core functionalities.
+numpy
+pandas
+scipy
+matplotlib
+h5py
+pytest
+seaborn
+tensorflow
+
+# Not necessary packages for formatting and plotting.
+tikzplotlib
+isort
+black
+flake8

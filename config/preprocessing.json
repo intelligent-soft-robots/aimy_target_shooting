@@ -1,0 +1,46 @@
+{
+    "smoothing_method": "savitzky-golay",
+    "savitzky-golay": {
+        "window_size": 13,
+        "polyorder": 2
+    },
+    "zero-phase-sos": {
+        "order": 3,
+        "cutoff_frequency": 0.9
+    },
+    "outlier_cut": {
+        "xlimit": [0.0, 2.90],
+        "ylimit": [-0.265, 0.265],
+        "zlimit": [0.75, 2.00]
+    },
+    "coordinate_rotation": {
+        "rotation_z_deg": 90.0
+    },
+    "remove_bias": {
+        "position_bias": [
+            0.381,
+            3.305,
+            -1.2
+        ],
+        "first_point_reference": 0
+    },
+    "noisy_samples": {
+        "threshold": 0.05,
+        "window_size": 18
+    },
+    "patchy_trajectories": {
+        "max_patch_size": 0.05
+    },
+    "empty_trajectories": {
+        "min_length": 20
+    },
+    "rebound_filter": {
+        "offset": 0.76,
+        "threshold": -0.03,
+        "distance": 10
+    },
+    "time_stamp_filter": {
+        "max_time_stamp": 4.6
+    }
+    
+}
