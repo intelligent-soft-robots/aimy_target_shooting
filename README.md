@@ -38,9 +38,7 @@ Interfacing MPI Intelligent Soft Robots Lab libraries:
 - **tennicam_client**: ball position tracking system
 - **signal_handler**: tracks interrupts via terminal
 
-# Acknowledgements
-
-The hardware for AIMY was developed by [Heiko Ott](https://is.mpg.de/person/hott) and [Thomas Steinbrenner](https://al.is.mpg.de/person/tsteinbrenner). The low-level control software for AIMY can be found [here](https://github.com/intelligent-soft-robots/ball_launcher_beepy) and is developed by [Nico Gürtler](https://is.mpg.de/person/nguertler).
+The low-level control software for AIMY can be found [here](https://github.com/intelligent-soft-robots/ball_launcher_beepy).
 
 # Citing AIMY
 
