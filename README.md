@@ -44,13 +44,15 @@ The low-level control software for AIMY can be found [here](https://github.com/i
 
 To cite **AIMY** in your academic research, please use the following bibtex lines:
 ```bibtex
-@misc{dittrich2023aimy,
-      title={AIMY: An Open-source Table Tennis Ball Launcher for Versatile and High-fidelity Trajectory Generation}, 
-      author={Alexander Dittrich and Jan Schneider and Simon Guist and Nico Gürtler and Heiko Ott and Thomas Steinbrenner and Bernhard Schölkopf and Dieter Büchler},
-      year={2023},
-      eprint={2210.06048},
-      archivePrefix={arXiv}
+@inproceedings{dittrich2023aimy,
+  title={AIMY: An open-source table tennis ball launcher for versatile and high-fidelity trajectory generation},
+  author={Dittrich, Alexander and Schneider, Jan and Guist, Simon and G{\"u}rtler, Nico and Ott, Heiko and Steinbrenner, Thomas and Sch{\"o}lkopf, Bernhard and B{\"u}chler, Dieter},
+  booktitle={2023 IEEE International Conference on Robotics and Automation (ICRA)},
+  pages={3058--3064},
+  year={2023},
+  organization={IEEE}
 }
+
 ```
 
 # License
