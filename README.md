@@ -46,7 +46,7 @@ To cite **AIMY** in your academic research, please use the following bibtex line
 ```bibtex
 @inproceedings{dittrich2023aimy,
   title={AIMY: An open-source table tennis ball launcher for versatile and high-fidelity trajectory generation},
-  author={Dittrich, Alexander and Schneider, Jan and Guist, Simon and G{\"u}rtler, Nico and Ott, Heiko and Steinbrenner, Thomas and Sch{\"o}lkopf, Bernhard and B{\"u}chler, Dieter},
+  author={Dittrich, Alexander and Schneider, Jan and Guist, Simon and Gürtler, Nico and Ott, Heiko and Steinbrenner, Thomas and Schölkopf, Bernhard and Büchler, Dieter},
   booktitle={2023 IEEE International Conference on Robotics and Automation (ICRA)},
   pages={3058--3064},
   year={2023},
